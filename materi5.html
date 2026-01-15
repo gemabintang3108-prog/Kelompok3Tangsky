@@ -42,29 +42,29 @@
   </li>
 
   <li>
-    <a href="materi1.html">
+    <a href="materi2.html">
       <i class="fas fa-book"></i> Materi 3
     </a>
   </li>
 
   <li>
-    <a href="materi2.html">
+    <a href="materi3.html">
       <i class="fas fa-book"></i> Materi 4
     </a>
   </li>
 
   <li>
-    <a href="materi3.html">
+    <a href="materi4.html">
       <i class="fas fa-book"></i> Materi 5
     </a>
   </li>
 
   <li>
-    <a href="materi4.html">
+    <a href="materi5.html">
       <i class="fas fa-book"></i> Materi 6
     </a>
   </li>
-</ul>
+        </ul>
        <!-- <div class="sidebar-footer">
            <a href="admin.html" style="color:#555; text-decoration:none; font-size:0.8rem;">Admin Login</a>
         </div>-->
@@ -80,20 +80,21 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
    <script type="module">
   import { db } from './config.js';
-  import { collection, query, where, orderBy, getDocs } 
-    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  AOS.init({ once: true });
+  // kalo lu pake AOS di file ini
+  if (window.AOS) AOS.init({ once: true });
 
   const page = (location.pathname.split('/').pop() || '').toLowerCase();
 
+  // ✅ MAPPING FINAL SESUAI FILE LU
   const targetMap = {
     "announcements.html": "materi1",
     "materi.html": "materi2",
-    "materi1.html": "materi3",
-    "materi2.html": "materi4",
-    "materi3.html": "materi5",
-    "materi4.html": "materi6",
+    "materi2.html": "materi3",
+    "materi3.html": "materi4",
+    "materi4.html": "materi5",
+    "materi5.html": "materi6",
   };
 
   const target = targetMap[page];
@@ -102,37 +103,45 @@
   const loading = document.getElementById('loading');
 
   async function fetchAnnounce() {
-    const q = query(
-      collection(db, "announcements"),
-      where("target", "==", target),
-      orderBy("createdAt", "desc")
-    );
+    try {
+      if (!target) throw new Error("Target halaman ga ketemu untuk: " + page);
 
-    const snap = await getDocs(q);
-    loading.style.display = 'none';
+      const q = query(
+        collection(db, "announcements"),
+        where("target", "==", target),
+        orderBy("createdAt", "desc")
+      );
 
-    if (snap.empty) {
-      container.innerHTML = "<p>Tidak ada pengumuman.</p>";
-      return;
-    }
+      const snap = await getDocs(q);
 
-    container.innerHTML = "";
-    snap.forEach((doc) => {
-      const a = doc.data();
-      container.innerHTML += `
-        <div class="announce-card">
-          <div class="announce-meta">
-            <span class="announce-tag">${a.category}</span>
-            <span>${a.date}</span>
+      if (snap.empty) {
+        container.innerHTML = "<p>Tidak ada pengumuman.</p>";
+        return;
+      }
+
+      container.innerHTML = "";
+      snap.forEach((doc) => {
+        const a = doc.data();
+        container.innerHTML += `
+          <div class="announce-card" data-aos="fade-left">
+            <div class="announce-meta">
+              <span class="announce-tag">${a.category ?? ""}</span>
+              <span><i class="far fa-calendar-alt"></i> ${a.date ?? ""}</span>
+            </div>
+            <h3>${a.title ?? ""}</h3>
+            <p style="color:var(--text-sec); margin-top:10px">${a.desc ?? ""}</p>
           </div>
-          <h3>${a.title}</h3>
-          <p>${a.desc}</p>
-        </div>
-      `;
-    });
+        `;
+      });
+    } catch (e) {
+      console.error(e);
+      container.innerHTML = "<p>Gagal load pengumuman.</p>";
+    } finally {
+      if (loading) loading.style.display = "none"; // ✅ biar ga muter terus
+    }
   }
 
   fetchAnnounce();
-</script>
+   </script>
 </body>
 </html>
