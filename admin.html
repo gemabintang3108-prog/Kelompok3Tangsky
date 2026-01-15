@@ -283,12 +283,12 @@
                 });
             });
         }
-        window.showForm = (ev, type) => {
-  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-  ev.target.classList.add('active');
-  document.getElementById('member-section').style.display   = type === 'member'  ? 'block' : 'none';
-  document.getElementById('announce-section').style.display = type === 'announce'? 'block' : 'none';
-};
+        window.showForm = (type) => {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('member-section').style.display = type === 'member' ? 'block' : 'none';
+            document.getElementById('announce-section').style.display = type === 'announce' ? 'block' : 'none';
+        }
         window.deleteItem = async (col, id) => {
             if(confirm('Yakin ingin menghapus data ini?')) {
                 try {
