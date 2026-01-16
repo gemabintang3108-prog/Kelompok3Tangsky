@@ -182,9 +182,9 @@ section { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
     padding: 3px 10px; border-radius: 15px;
     font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
 }
-.role-admin { background: #FF003C; color: #fff; }
-.role-mod { background: #FF8800; color: #fff; }
-.role-member { background: #444; color: #ccc; }
+.role-ketua { background: #FF003C; color: #fff; }
+.role-wakil { background: #FF003C; color: #fff; }
+.role-anggota { background: #FF003C; color: #fff; }
 
 .member-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
 .card-pic {
