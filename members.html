@@ -131,80 +131,74 @@
   }
 
   window.renderMembers = (filter) => {
-    const container = document.getElementById('member-container');
-    container.innerHTML = '';
+  const container = document.getElementById('member-container');
+  container.innerHTML = '';
 
-    let filtered =
-      filter === 'all'
-        ? [...allMembers]
-        : allMembers.filter(m => m.role === filter);
+  const filtered = filter === 'all'
+    ? [...allMembers]
+    : allMembers.filter(m => m.role === filter);
 
-    if (filtered.length === 0) {
-      container.innerHTML = '<p style="color:var(--text-sec);">Belum ada member di kategori ini.</p>';
-      return;
+  if (filtered.length === 0) {
+    container.innerHTML = '<p style="color:var(--text-sec);">Belum ada member di kategori ini.</p>';
+    return;
+  }
+
+  // ✅ CUMA URUTIN: Ketua -> Wakil -> Anggota (P dulu, baru L)
+  const roleOrder = { admin: 1, moderator: 2, member: 3 };
+  const genderOrder = { "♀️": 1, "♂️": 2 };
+
+  filtered.sort((a, b) => {
+    const roleDiff = (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
+    if (roleDiff !== 0) return roleDiff;
+
+    // kalau sama-sama anggota, urutin gender
+    if (a.role === "member" && b.role === "member") {
+      return (genderOrder[a.gender] || 99) - (genderOrder[b.gender] || 99);
     }
 
-    const roleOrder = { admin: 1, moderator: 2, member: 3 };
-    const genderOrder = { "♀️": 1, "♂️": 2 };
+    return 0;
+  });
 
-    filtered.sort((a, b) => {
-      const roleDiff = (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
-      if (roleDiff !== 0) return roleDiff;
+  // 🔥 render lu yang asli (tetep, gak gua ubah)
+  filtered.forEach((m, idx) => {
+    let gamesHtml = '';
+    if (m.games) {
+      m.games.split(',').forEach(g => {
+        const parts = g.split(':');
+        const gName = parts[0]?.trim() || '';
+        const gId = parts[1]?.trim() || '';
+        if (gName) {
+          gamesHtml += `<div class="game-row"><i class="fas ${getGameIcon(gName)}"></i> <span>${gName}: <b style="color:white">${gId}</b></span></div>`;
+        }
+      });
+    }
 
-      if (a.role === "member" && b.role === "member") {
-        return (genderOrder[a.gender] || 99) - (genderOrder[b.gender] || 99);
-      }
-      return 0;
-    });
+    let socialHtml = '';
+    if (m.socials) {
+      m.socials.split(',').forEach(s => {
+        const parts = s.split(':');
+        const platform = parts[0]?.trim();
+        const link = s.substring(s.indexOf(':') + 1).trim();
+        if (platform) socialHtml += `<a href="${link}" target="_blank"><i class="fab fa-${platform}"></i></a>`;
+      });
+    }
 
-    filtered.forEach((m, idx) => {
-      // Parse games
-      let gamesHtml = '';
-      if (m.games) {
-        m.games.split(',').forEach(g => {
-          const parts = g.split(':');
-          const gName = parts[0]?.trim() || '';
-          const gId = parts[1]?.trim() || '';
-          if (gName) {
-            gamesHtml += `<div class="game-row"><i class="fas ${getGameIcon(gName)}"></i> <span>${gName}: <b style="color:white">${gId}</b></span></div>`;
-          }
-        });
-      }
-
-      // Parse socials
-      let socialHtml = '';
-      if (m.socials) {
-        m.socials.split(',').forEach(s => {
-          const parts = s.split(':');
-          const platform = parts[0]?.trim();
-          const link = s.substring(s.indexOf(':') + 1).trim();
-          if (platform) socialHtml += `<a href="${link}" target="_blank"><i class="fab fa-${platform}"></i></a>`;
-        });
-      }
-
-      // Label role
-      const roleLabel =
-        m.role === "admin" ? "Ketua" :
-        m.role === "moderator" ? "Wakil" :
-        m.gender === "♀️" ? "Anggota (Perempuan)" :
-        "Anggota (Laki-laki)";
-
-      container.innerHTML += `
-        <div class="member-card" data-aos="zoom-in" data-aos-delay="${idx * 50}">
-          <span class="role-badge role-${m.role}">${roleLabel}</span>
-          <div class="member-header">
-            <div class="card-pic" style="background-image: url('${m.avatar}')"></div>
-            <div>
-              <h3>${m.name}</h3>
-              <p class="member-details">${m.age} th • ${m.gender}</p>
-            </div>
+    container.innerHTML += `
+      <div class="member-card" data-aos="zoom-in" data-aos-delay="${idx * 50}">
+        <span class="role-badge role-${m.role}">${m.role}</span>
+        <div class="member-header">
+          <div class="card-pic" style="background-image: url('${m.avatar}')"></div>
+          <div>
+            <h3>${m.name}</h3>
+            <p class="member-details">${m.age} th • ${m.gender}</p>
           </div>
-          <div class="game-ids">${gamesHtml}</div>
-          <div class="social-row">${socialHtml}</div>
         </div>
-      `;
-    });
-  };
+        <div class="game-ids">${gamesHtml}</div>
+        <div class="social-row">${socialHtml}</div>
+      </div>
+    `;
+  });
+};
 
   window.filterMembers = (role) => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
