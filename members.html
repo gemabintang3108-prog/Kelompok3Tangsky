@@ -63,25 +63,25 @@
   </li>
 
   <li>
-    <a href="materi1.html">
+    <a href="materi2.html">
       <i class="fas fa-book"></i> Materi 3
     </a>
   </li>
 
   <li>
-    <a href="materi2.html">
+    <a href="materi3.html">
       <i class="fas fa-book"></i> Materi 4
     </a>
   </li>
 
   <li>
-    <a href="materi3.html">
+    <a href="materi4.html">
       <i class="fas fa-book"></i> Materi 5
     </a>
   </li>
 
   <li>
-    <a href="materi4.html">
+    <a href="materi5.html">
       <i class="fas fa-book"></i> Materi 6
     </a>
   </li>
@@ -128,13 +128,66 @@
             }
         }
         window.renderMembers = (filter) => {
-            const container = document.getElementById('member-container');
-            container.innerHTML = '';
-            const filtered = filter === 'all' ? allMembers : allMembers.filter(m => m.role === filter);
-            if(filtered.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-sec);">Belum ada member di kategori ini.</p>';
-                return;
-            }
+  const container = document.getElementById('member-container');
+  container.innerHTML = '';
+
+  let filtered =
+    filter === 'all'
+      ? [...allMembers]
+      : allMembers.filter(m => m.role === filter);
+
+  if(filtered.length === 0) {
+    container.innerHTML =
+      '<p style="color:var(--text-sec);">Belum ada member di kategori ini.</p>';
+    return;
+  }
+
+  // 🔢 PRIORITAS URUTAN
+  const roleOrder = {
+    admin: 1,      // Ketua
+    moderator: 2,  // Wakil
+    member: 3      // Anggota
+  };
+
+  const genderOrder = {
+    "♀️": 1, // Perempuan dulu
+    "♂️": 2
+  };
+
+  // 🔥 SORTING UTAMA
+  filtered.sort((a, b) => {
+    const roleDiff = roleOrder[a.role] - roleOrder[b.role];
+    if (roleDiff !== 0) return roleDiff;
+
+    // kalau sama-sama anggota → urutin gender
+    if (a.role === "member" && b.role === "member") {
+      return (genderOrder[a.gender] || 99) - (genderOrder[b.gender] || 99);
+    }
+
+    return 0;
+  });
+
+  // 🔁 BARU RENDER
+  filtered.forEach((m, idx) => {
+    container.innerHTML += `
+      <div class="member-card">
+        <span class="role-badge role-${m.role}">
+          ${m.role === "admin" ? "Ketua"
+            : m.role === "moderator" ? "Wakil"
+            : m.gender === "♀️" ? "Anggota (Perempuan)"
+            : "Anggota (Laki-laki)"}
+        </span>
+        <div class="member-header">
+          <div class="card-pic" style="background-image:url('${m.avatar}')"></div>
+          <div>
+            <h3>${m.name}</h3>
+            <p class="member-details">${m.age} th • ${m.gender}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+};
             filtered.forEach((m, idx) => {
                 // Parse Game String (ex: "Valo:Id, Dota:Id")
                 let gamesHtml = '';
