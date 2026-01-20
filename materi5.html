@@ -130,9 +130,13 @@
             </div>
             <h3>${a.title ?? ""}</h3>
             <p style="color:var(--text-sec); margin-top:10px">
-  ${(a.desc ?? "").replace(/\n/g, "<br><br>")}
+  ${(a.desc ?? "")
+    .trim()
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/\n\n/g, "<br><br>")
+    .replace(/\n/g, "<br>")}
 </p>
-          </div>
+            </div>
         `;
       });
     } catch (e) {
