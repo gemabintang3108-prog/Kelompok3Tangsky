@@ -71,7 +71,7 @@
     </aside>
     <main class="main-content">
         <section>
-            <div class="section-title" data-aos="fade-right">Announcement</div>
+            <div class="section-title" data-aos="fade-right">Inflasi Zimbabwe</div>
             <div id="loading" class="loader-container"><div class="loader"></div></div>
             <div id="announce-container" style="max-width: 800px;"></div>
         </section>
@@ -129,7 +129,9 @@
               <span><i class="far fa-calendar-alt"></i> ${a.date ?? ""}</span>
             </div>
             <h3>${a.title ?? ""}</h3>
-            <p style="color:var(--text-sec); margin-top:10px">${a.desc ?? ""}</p>
+            <p style="color:var(--text-sec); margin-top:10px">
+  ${(a.desc ?? "").replace(/\n/g, "<br><br>")}
+</p>
           </div>
         `;
       });
