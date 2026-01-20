@@ -134,32 +134,52 @@
   const container = document.getElementById('member-container');
   container.innerHTML = '';
 
-  const filtered = filter === 'all'
+  // ambil data dulu
+  let filtered = (filter === 'all')
     ? [...allMembers]
-    : allMembers.filter(m => m.role === filter);
+    : allMembers.filter(m => (m.role || '').toLowerCase() === filter.toLowerCase());
 
   if (filtered.length === 0) {
     container.innerHTML = '<p style="color:var(--text-sec);">Belum ada member di kategori ini.</p>';
     return;
   }
 
-  // ✅ CUMA URUTIN: Ketua -> Wakil -> Anggota (P dulu, baru L)
-  const roleOrder = { admin: 1, moderator: 2, member: 3 };
-  const genderOrder = { "♀️": 1, "♂️": 2 };
+  // 🔥 NORMALISASI ROLE (ketua/admin, wakil/moderator, anggota/member)
+  const normalizeRole = (r) => {
+    r = (r || '').toString().toLowerCase().trim();
+    if (r === 'admin' || r === 'ketua') return 'ketua';
+    if (r === 'moderator' || r === 'wakil') return 'wakil';
+    return 'anggota'; // default
+  };
+
+  // 🔥 NORMALISASI GENDER (♀️/perempuan/cewe, ♂️/laki/cowok)
+  const normalizeGender = (g) => {
+    g = (g || '').toString().toLowerCase().trim();
+    if (g.includes('♀') || g.includes('perem') || g.includes('cewe') || g.includes('wanita')) return 'p';
+    if (g.includes('♂') || g.includes('laki') || g.includes('cowok') || g.includes('pria')) return 'l';
+    return 'z'; // unknown
+  };
+
+  // ✅ URUTAN FIX: Ketua -> Wakil -> Anggota
+  const roleOrder = { ketua: 1, wakil: 2, anggota: 3 };
+  const genderOrder = { p: 1, l: 2, z: 99 };
 
   filtered.sort((a, b) => {
-    const roleDiff = (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
+    const ra = normalizeRole(a.role);
+    const rb = normalizeRole(b.role);
+    const roleDiff = roleOrder[ra] - roleOrder[rb];
     if (roleDiff !== 0) return roleDiff;
 
     // kalau sama-sama anggota, urutin gender
-    if (a.role === "member" && b.role === "member") {
-      return (genderOrder[a.gender] || 99) - (genderOrder[b.gender] || 99);
+    if (ra === 'anggota' && rb === 'anggota') {
+      const ga = normalizeGender(a.gender);
+      const gb = normalizeGender(b.gender);
+      return (genderOrder[ga] || 99) - (genderOrder[gb] || 99);
     }
-
     return 0;
   });
 
-  // 🔥 render lu yang asli (tetep, gak gua ubah)
+  // ✅ render asli lu (tetep)
   filtered.forEach((m, idx) => {
     let gamesHtml = '';
     if (m.games) {
