@@ -132,11 +132,8 @@
             <p style="color:var(--text-sec); margin-top:10px">
   {(a.desc ?? "")
     .trim()
-    // rapihin newline berlebihan
     .replace(/\n{3,}/g, "\n\n")
-    // paragraf baru (enter 2x)
     .replace(/\n\n/g, "<br><br>")
-    // baris biasa (enter 1x)
     .replace(/\n/g, "<br>")}
 </p>
           </div>
