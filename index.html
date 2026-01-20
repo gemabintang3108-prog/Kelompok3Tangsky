@@ -49,6 +49,26 @@
         <source src="https://files.catbox.moe/wuute8.mp4" type="video/mp4">
     </video>
 
+    <audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/nvqhdv.mp4" type="audio/mpeg">
+    </audio>
+
+    <script>
+  const bgMusic = document.getElementById("bgMusic");
+  let musicStarted = false;
+
+  function startMusicOnce() {
+    if (musicStarted) return;
+    bgMusic.volume = 0.5;
+    bgMusic.play().then(() => {
+      musicStarted = true;
+    }).catch(()=>{});
+  }
+
+  document.addEventListener("click", startMusicOnce);
+  document.addEventListener("touchstart", startMusicOnce);
+    </script>
+
     <div class="menu-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </div>
