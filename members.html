@@ -188,19 +188,7 @@
     `;
   });
 };
-            filtered.forEach((m, idx) => {
-                // Parse Game String (ex: "Valo:Id, Dota:Id")
-                let gamesHtml = '';
-                if(m.games) {
-                    m.games.split(',').forEach(g => {
-                        const parts = g.split(':');
-                        const gName = parts[0]?.trim() || '';
-                        const gId = parts[1]?.trim() || '';
-                        if(gName) {
-                            gamesHtml += `<div class="game-row"><i class="fas ${getGameIcon(gName)}"></i> <span>${gName}: <b style="color:white">${gId}</b></span></div>`;
-                        }
-                    });
-                }
+            
                 let socialHtml = '';
                 if(m.socials) {
                     m.socials.split(',').forEach(s => {
