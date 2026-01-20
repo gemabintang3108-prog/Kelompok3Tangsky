@@ -11,13 +11,13 @@
 </head>
 <body>
     <video id="bg-video" autoplay muted loop playsinline>
-        <source src="https://raw.githubusercontent.com/gataubroicape-droid/dat2/main/uploads/06071b-1766158674257.mp4" type="video/mp4">
+        <source src="https://files.catbox.moe/wuute8.mp4" type="video/mp4">
     </video>
     <div class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars"></i></div>  
     <aside class="sidebar">
         <div class="brand">KELOMPOK 3</div>
         <ul class="menu-list">
-            <li>
+  <li>
     <a href="index.html">
       <i class="fas fa-home"></i> Home
     </a>
@@ -64,14 +64,14 @@
       <i class="fas fa-book"></i> Materi 6
     </a>
   </li>
-        </ul>
+</ul>
        <!-- <div class="sidebar-footer">
            <a href="admin.html" style="color:#555; text-decoration:none; font-size:0.8rem;">Admin Login</a>
         </div>-->
     </aside>
     <main class="main-content">
         <section>
-            <div class="section-title" data-aos="fade-right">Announcement</div>
+            <div class="section-title" data-aos="fade-right">Inflasi Zimbabwe</div>
             <div id="loading" class="loader-container"><div class="loader"></div></div>
             <div id="announce-container" style="max-width: 800px;"></div>
         </section>
@@ -129,7 +129,9 @@
               <span><i class="far fa-calendar-alt"></i> ${a.date ?? ""}</span>
             </div>
             <h3>${a.title ?? ""}</h3>
-            <p style="color:var(--text-sec); margin-top:10px">${a.desc ?? ""}</p>
+            <p style="color:var(--text-sec); margin-top:10px">
+  ${(a.desc ?? "").replace(/\n/g, "<br><br>")}
+</p>
           </div>
         `;
       });
@@ -142,6 +144,6 @@
   }
 
   fetchAnnounce();
-    </script>
+</script>
 </body>
 </html>
