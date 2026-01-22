@@ -40,12 +40,35 @@ body {
     z-index: -5; object-fit: cover;
 }
 
-.sidebar{
-  background: 
-    linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.85)),
-    url("https://files.catbox.moe/8cthra.jpg");
-  background-size: cover;
-  background-position: center;
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+
+    /* 🔥 BACKGROUND FOTO */
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.75),
+            rgba(0,0,0,0.85)
+        ),
+        url("https://files.catbox.moe/8cthra.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border-right: 1px solid var(--border-color);
+    padding: 30px 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    z-index: 1000;
+    transition: var(--transition);
 }
 
 .brand {
